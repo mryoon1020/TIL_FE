@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <div id="root"></div>
+</body>
+<script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+    const root = document.getElementById("root");
+    let counter = 0;
+    function countUp() {
+        counter =counter+1;
+        render();
+    }
+    function render(){
+        ReactDOM.render(<App />, root);
+    }
+    const App = () =>(
+        <div>
+            <h3>Total clicks: {counter}</h3>
+            <button onClick={countUp}>Click me</button>
+        </div>
+    );
+    render();
+</script>
+<script>
+/*
+JSX문법을 통해 만들어진 카운팅기능
+두번이나 렌더링을 하기때문에 처리해야할 데이터가 방대할경우 성능이 저하됨
+
+원리는 단순함
+처음 페이지가 리프레쉬(나타났을 때) 되었을때,
+counter는 0인 상태로 렌더링됨
+버튼을 클릭하였을 때 카운터는 counterUp()에 의해 1증가하게됨
+이후 render()를 통해 다시 화면에 렌더링되게됨
+렌더링하지 않을경우 변화한 값은 화면에 표시되지 않음
+
+어쨌든 react는 변화된 값만 인식하여 변경해준다는점에서 vainilla보다 좋음
+vanilla는 계속 eventListener와 같은 것들을 계속 리프레쉬를 함
+chrome 개발자 툴 element에서 상기내용 확인가능
+*/
+</script>
+</html>

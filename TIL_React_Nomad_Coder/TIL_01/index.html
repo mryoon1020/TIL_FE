@@ -8,20 +8,63 @@
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script type="text/babel">
     const root = document.getElementById("root");
-    let counter = 0;
-    function countUp() {
-        counter =counter+1;
-        render();
-    }
-    function render(){
-        ReactDOM.render(<Container />, root);
-    }
-    const Container = () =>(
+    function App () {
+        const [counter, setCounter] = React.useState(0);
+        const onClick = () => {
+            setCounter(10)
+            // setCounter(counter+1);
+
+            setCounter((current) => current +1);
+            // setCounter((current) => current +1);
+            // setCounter((current) => current +1);
+            // setCounter((current) => current +1);
+        };
+        return (
         <div>
             <h3>Total clicks: {counter}</h3>
-            <button onClick={countUp}>Click me</button>
+            <button onClick={onClick}>Click me</button>
         </div>
-    );
-    render();
+        );
+    };
+    ReactDOM.render(<App />, root);
+</script>
+<script>
+    /*  
+    const [변수,변수를 변경시켜줄 함수] = React.useState(변수의 초기값);
+
+    상기방법은 다시 렌더링을 해주는 방법보다 좋은방법이긴 하지만
+    좋은방법은 아님. counter가 다른쪽에서도 수정이 가능하기때문.
+    다른쪽에서 수정되어서 counter가 우리가 원하는 정확한 수정값이 아닐수도 있음
+
+    간단히 테스트해보면
+    const onClick = () => {
+            setCounter(10)
+            setCounter(counter+1);
+        };
+
+    상기와 같이 할경우 우리는 버튼을 한번 클릭시 1이 나옴,
+    즉, onClick함수 내에서 어떤 변화를 줘도 변수는 처음 설정함 0 으로만 설정됨
+
+    추가적으로 상기방식은 state(현재값, 여기서는 counter)를 직접 변경해주는 방식
+
+            const onClick = () => {
+            setCounter(10)
+            setCounter((current) => current +1);
+
+        };
+
+    상기와 같이 할경우 11이 정상적으로 출력되는 것을 볼수 있음
+
+    상기방식은 이전 값을 바탕으로 현재값을 설정하는 방식,
+    함수호출가 될때 마다 새로운 state가 생성되는 것으로
+    react가 current를 확실히 현재값이라는 것을 보장함기 때문
+    즉, 현재 state를 통해 다음 state를 설정, 어느곳에서 업데이트가 된것과 상관없이
+    현재의 값으로 계산됨
+
+    setCounter(counter+1);과 같이 직접 변수에 변화를 주는 형태보다
+    함수로 만들어 사용하는 것이 훨씬 더 안전함
+    counter가 확실히 우리가 사용하는 현재 state를 사용하게 해줌
+
+*/
 </script>
 </html>

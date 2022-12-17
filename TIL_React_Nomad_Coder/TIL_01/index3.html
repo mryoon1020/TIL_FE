@@ -5,23 +5,35 @@
 </body>
 <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
 <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
-<script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
     const root = document.getElementById("root");
-    const h3 = React.createElement(
-        "h3",
-    {
-        onMouseEnter: () => console.log("mouse enter"),
-    },
-    "Hello I am a Title"
-    );
-    const btn = React.createElement(
-        "button",
-    {
-        onClick: () => console.log("I am clicked"),
-    },
-    "Click me"
-    );
-    const container = React.createElement("div", null,[h3, btn]);
-    ReactDOM.render(container,root);
+    function App () {
+        const [counter, setCounter] = React.useState(0);
+        const onClick = () => {
+            setCounter(counter+1);
+        };
+        console.log("rendered");
+        console.log(counter);
+        return (
+        <div>
+            <h3>Total clicks: {counter}</h3>
+            <button onClick={onClick}>Click me</button>
+        </div>
+        );
+    };
+    ReactDOM.render(<App />, root);
+</script>
+<script>
+    /* 
+    const [변수,변수를 변경시켜줄 함수] = React.useState(변수의 초기값);
+
+    원리 이해를위해 console.log를 찍어보았음
+    첫 리프레쉬 counter = 0
+    버튼 클릭 counter = 1
+    버튼 2회클릭 counter = 2
+    이미 렌더링되어있는 상태에서 값만 변경해줌
+    
+*/
 </script>
 </html>
