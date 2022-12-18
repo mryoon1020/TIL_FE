@@ -10,15 +10,14 @@
     const root = document.getElementById("root");
     function App () {
         const [counter, setCounter] = React.useState(0);
-        const onClick = () => {
-            setCounter(10)
-            // setCounter(counter+1);
 
+        const onClick = () => {
+
+            // setCounter(counter+1);
             setCounter((current) => current +1);
-            // setCounter((current) => current +1);
-            // setCounter((current) => current +1);
-            // setCounter((current) => current +1);
+
         };
+
         return (
         <div>
             <h3>Total clicks: {counter}</h3>
@@ -43,7 +42,7 @@
         };
 
     상기와 같이 할경우 우리는 버튼을 한번 클릭시 1이 나옴,
-    즉, onClick함수 내에서 어떤 변화를 줘도 변수는 처음 설정함 0 으로만 설정됨
+    즉, onClick함수 내에서 어떤 변화를 줘도 변수는 처음 설정한 0 으로만 설정됨
 
     추가적으로 상기방식은 state(현재값, 여기서는 counter)를 직접 변경해주는 방식
 

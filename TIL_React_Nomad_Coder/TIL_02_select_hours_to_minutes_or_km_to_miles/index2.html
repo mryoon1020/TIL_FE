@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <div id="root"></div>
+</body>
+<script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+    function App () {
+        const [amount, setAmount] = React.useState(0);
+        const [inverted, setInverted] = React.useState(false);
+        const onChange = (event) => {
+            setAmount(event.target.value);
+        };
+        const reset = () => setAmount(0);
+        const onInvert = () => {
+            reset();
+            setInverted((current)=>!current);
+        };
+        return (
+        <div>
+            <h1>Super Converter</h1>
+            <div>
+            <label htmlFor="minutes">Minutes</label>
+            <input 
+            value={inverted ? amount * 60 : amount}
+            id="minutes" 
+            placeholder = "Minutes"
+            type="number" 
+            onChange={onChange}
+            disabled={inverted}
+            />
+            </div>
+
+            <div>
+            <h4>You want to convert {amount}</h4>
+            <label htmlFor="hours">Hours</label>
+            <input 
+            value={inverted ? amount : Math.round(amount/60)} 
+            id="hours" 
+            placeholder = "Hours" 
+            type="number" 
+            disabled={!inverted}
+            onChange={onChange}
+            />
+            </div>
+            <button onClick={reset}>Reset</button>
+            <button onClick={onInvert}>{inverted ? "Turn back" : "Invert"}</button>
+        </div>
+        );
+    };
+    const root = document.getElementById("root");
+    ReactDOM.render(<App />, root);
+</script>
+<script>
+/*  
+JSX문법에서 for, class 사용불가. 자바스크립트 용어로 이미 react에서 선점된 단어이기 때문
+<script src="https://unpkg.com/react@17/umd/react.production.min.js">에서는 가능
+<script src="https://unpkg.com/react@17/umd/react.development.js">에서는 절대 불가
+    옳은 표현이 아니므로 사용하지말 것
+<JSX 올바른 표기>
+    class => className
+    for => htmlFor
+
+React는 javascript와 마찬가지로 event에 접근이 가능함
+이벤트 출력시 SyntheticBaseEvent에서 확인 가능
+Synthetic(합성)이 붙은 이유는 react.js가 가짜 이벤트를 발생시키기 때문,
+가짜 이벤트는 이벤트를 최적화시킴,
+원래 이벤트를 얻고 싶다면 nativeEvent에서 확인가능
+target(방금바뀐 input을 뜻함)에 접근가능
+console.log(event.target.value); 로 확인 가능
+
+<구성순서>
+1. state를 만듬
+    - setState의 결과는 array임
+    - [데이터, 데이터를 수정하기위한함수] = React.useState(데이터의초기값)
+2. input의 value를 state와 연결
+    - value={minutes}
+3. onChange함수 생성
+    - 데이터를 업데이트해주는 역할(input에서 listening하는 데이터, {minutes})
+    - input은 스스로 update함(사용자가 input에 데이터를 적을 때 onChange함수를 실행함)
+    - onChange함수를 지울경우 아무리 타이핑해도 {minutes}가 업데이트 되지 않음
+4. reset버튼 생성
+
+5. flip 버튼 생성
+    - setFlipped((current)=>!current);
+        - true, false에서 어떤 값이 오든지 반대로 만들어줌
+        - true => false // false => true
+    - flipped === false -> !flipped
+    - flipped === true -> flipped
+6. minutes과 hours value에 삼항연산자 추가
+    - flipped ? amount * 60 : amount
+        - if (flipped = true) { amount = amount * 60 }else{ amount = amount }
+    - flipped ? amount : Math.round(amount/60)
+        - if (flipped = true) { amount = amount }else{ amount = Math.round(amount/60) }
+7. onFlip에 reset() 추가
+
+*/
+</script>
+</html>
