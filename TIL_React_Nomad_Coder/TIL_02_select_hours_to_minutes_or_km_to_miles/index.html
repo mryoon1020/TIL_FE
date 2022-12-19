@@ -50,8 +50,43 @@
         );
     };
     function KmToMiles() {
+        const [distance,setDistance] = React.useState(0);
+        const [switched,setSwitched] = React.useState(false);
+        const switching = () => {
+            resetZero();
+            setSwitched((current) => !current);
+        };
+        const onConvert = (event) => {
+            setDistance(event.target.value);
+        };
+        const resetZero = () => setDistance(0);
         return (
-            <h3>KM 2 M</h3>
+        <div>
+            <h3>KM to M</h3>
+            <div>
+                <label htmlFor="kmeter">KM : </label>
+                <input 
+                id="kmeter" 
+                type="number" 
+                onChange={onConvert} 
+                value={switched ? Math.round(distance/0.621371) : distance} 
+                disabled={switched}
+                />
+            </div>
+            <h4>You want to convert {distance} {switched? "Miles to Km" : "Km to Miles"}</h4>
+            <div>
+                <label htmlFor="miles">Miles : </label>
+                <input 
+                id="miles" 
+                type="number" 
+                onChange={onConvert} 
+                value={switched ? distance : Math.round(distance*0.621371)} 
+                disabled={!switched}
+                />
+            </div>
+            <button onClick={resetZero}>Reset</button>
+            <button onClick={switching}>{switched?"Turn Back":"Switch"}</button>
+        </div>
         );
         };
     function App () {
@@ -89,6 +124,11 @@ error log. : return 에서 함부로 행을 바꾸면 안됨, 반드시 다음�
     - return <h3>KM 2 M</h3>;
 
 가장 중요한것은 modifier 함수(여기서는 set amount, setIndex)를 사용했을 때 컴포넌트가 다시 렌더링됨
+
+label은 말그대로 이름표 붙이는 것으로 for속성(JSX에서는 htmlFor) input의 id값을 통해 연결할 수 있음
+연결확인 방법은 label을 클릭했을때 input에 커서 또는 반응이 오면 연결된것임
+
+Km to Miles를 직접 작성하였다. 기능에 이상없지만 삼항연산자부분의 switched의 true/false 주의할것 잘못쓰면 error가 남
 */
 </script>
 </html>
