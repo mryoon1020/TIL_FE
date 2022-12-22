@@ -5,31 +5,35 @@
 </body>
 <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
 <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/prop-types@15.7.2/prop-types.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script type="text/babel">
-    function Btn({banana, onClick}){
-        console.log(banana, "was renderd")
+    function Btn({text, fontSize=30}){
+    //function Btn(props){
         return (<button 
-        onClick={onClick}
         style={{
             backgroundColor : "tomato",
             color : "white",
             padding : "10px 20px",
             border: 0,
             borderRadius : 10,
+            fontSize: fontSize,
+            //fontSize: props.fontSize,
         }}>
-        {banana}
+        {text}
+        {/*{props.text}*/}
         </button>
         );
         }
-        const MemorizedBtn = React.memo(Btn);
+        Btn.propTypes ={
+            text: PropTypes.string.isRequired,
+            fontSize: PropTypes.number,
+        }
     function App () {
-        const [value, setValue] = React.useState("Save Changes");
-        const onClick = () => setValue("Revert Changes");
         return (
             <div>
-                <MemorizedBtn banana={value} onClick={onClick} />
-                <MemorizedBtn banana="Continue" />
+                <Btn text="Save changes" fontSize={18} />
+                <Btn text={"Continue"}/>
             </div>
             )
     };
@@ -38,17 +42,43 @@
 </script>
 <script>
 /*  
-프로퍼티값들은 절대 자동으로 리턴되지않음
-항상 함수를만들어서 사용해주어야 됨
-프로퍼티값들에 어떤 명칭을 써도 html태그처럼 적용되지 않음
-예를들어 프로퍼티로 onClick을 사용해도 함수에서 따로 onClick이벤트를 설정해주지 않으면
-아무런 이벤트가 발생하지 않음
-function Btn({banana, onClick}) 이렇게 파라미터는 그저 사용되어지는 프로퍼티 값일뿐임
-데이터가 수정될때 마다(state가 바뀔때 마다) re-render 됨
+fontSize: fontSize => fontSize로 표기 간능(이름이 같기 떄문)
 
-부모에 어떤 state변화가 있다면 모든 자식들은 re-render가 됨
--> 추후에 내 어플리케이션이 느려지는 원인이 될수도 있음
--> React.memo()를 통해 프로퍼티가 바뀌지 않으면 re-render되지 않도록 기억해줌
+<script src="https://unpkg.com/prop-types@15.7.2/prop-types.js">
+사용시 syntex에러가 아닌 에러를 잡을 수 있음
+예를들어,
+        <Btn text="Save changes" fontSize={18} />
+        <Btn text={14} fontSize={"Continue"} />
+표기시 JSX문법상 오류가 없음, 하지만 오류임(내가 원하던 방향으로 표기되지 않기 때문)
+이러한 상황을 예방하기위해
+        Btn.propTypes ={
+            text: PropTypes.string,
+            fontSize: PropTypes.number,
+        }
+이렇게 표기해주면 브라우저 콘솔에서 다음과 같이 에러메시지를 보내줌
+" react.development.js:245 Warning: Failed prop type: Invalid prop `text` of type `number` supplied to `Btn`, expected `string`.
+    at Btn (<anonymous>:4:19) "
+
+PropTypes 내부에서
+fontSize: PropTypes.number.isRequired
+상기와 같이 적는다면 prop에서 fontSize는 반드시 존재해야함
+
+        <Btn text="Save changes" fontSize={18} />
+        <Btn text={"Continue"} />
+상기와 같이 적는다면 브라우저 console에서 에러로그를 확인 할 수 있음
+react.development.js:245 Warning: Failed prop type: The prop `fontSize` is marked as required in `Btn`, but its value is `undefined`.
+    at Btn (<anonymous>:4:19)
+
+    function Btn({text, fontSize=30}) 이렇게 prop의 초기값을 설정할 수있음
+    하지만 적용은 fontSize가 지정되어있지 않는 곳에서만 설정한 초기값이 적용됨
+    JSX문법은 아님(javscript문법임)
+
+        <Btn text="Save changes" fontSize={18} />
+        <Btn text={"Continue"}/>
+상기 코드에서는 두번째 Btn에만 적용됨
+
+현재 주석 위의 코드에서 주석친부분들 주석 바로 윗줄과 교체해도 됨(단, 모두 교체하것)
+하지만 잘 사용되지 않는 방식임
 */
 </script>
 </html>
