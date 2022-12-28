@@ -10,6 +10,7 @@ root.render(
 );
 
 /*
+2022-12-23
 powershell => node -v : nodejs 버전확인
 powershell => npx : npx작동가능여부 확인(확인되면 exit으로 나오면됨)
 powershell => clear : 터미널 clear
