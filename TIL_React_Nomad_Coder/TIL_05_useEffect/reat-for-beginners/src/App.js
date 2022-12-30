@@ -110,4 +110,7 @@ useEffect는 코드를 딱한번만 실행 될 수 있도록 해줌
   },[keyword, counter]);
 
   => keyword, counter 둘중 하나라도 변화가 되면 실행됨
+
+  useEffect(실행을 원하는 코드,dependency);
+  => dependency에 대해 어렵게 생각할 필요없이 react가 감시하게 해줄 값을 넣으면 됨
 */
