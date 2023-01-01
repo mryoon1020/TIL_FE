@@ -2,12 +2,25 @@ import { useEffect, useState } from 'react';
 
 function App() {
   const [loading, setLoading] = useState(true);
-  const [coins, setCoins] = useState([])
+  const [coins, setCoins] = useState([]);
+  const [myUSD, setMyUSD] = useState(0);
+  const [priceCoin, setPriceCoin] = useState(0);
+  const [coinName, setCoinName] = useState("초기값");
+  const onChange = (event) => {
+    setMyUSD(event.target.value);
+  };
+  const onSelect = (e) => {
+    setPriceCoin(e.target.value);
+    setCoinName(e.target.dataset.name);
+    console.log(e);
+    console.log(coinName);
+  };
   useEffect(()=>{
     fetch("https://api.coinpaprika.com/v1/tickers")
     .then((response)=> response.json())
     .then((json) => {
       setCoins(json);
+      console.log(json);
       setLoading(false);
     });
   }, []);
@@ -17,17 +30,25 @@ function App() {
       {loading ? (
       <strong>Loading...</strong>
       ) : (
-        <select>
+        <select value={priceCoin} data-name={coinName} onChange={onSelect}>
+        <option>Select Coin</option>
         {coins.map((coin) =>(
         
-        <option>{coin.name} ({coin.symbol}) : {coin.quotes.USD.price}</option>
+        <option
+          value={coin.quotes.USD.price} 
+          id={coin.symbol}
+          >
+            {coin.name} ({coin.symbol}) {coin.quotes.USD.price}
+        </option>
         
         ))}
       </select>
       )}
-
-      <input type='number' placeholder='please write your USD' />
-      <h1>You can buy</h1>
+      <hr/>
+      <h1>
+      You can buy... {1/priceCoin*myUSD} {coinName}
+      </h1>
+      <input onChange={onChange} type='number' placeholder='please write your USD' />
     </div>
   );
 }
