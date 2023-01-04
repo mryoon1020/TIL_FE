@@ -1,8 +1,26 @@
-import { useEffect, useState } from 'react';
-import Movie from './components/Movie';
+import{
+  BrowserRouter as Router,
+  Route,
+  Switch,
+}from "react-router-dom";
+
+import Home from"./routes/Home";
+import Detail from"./routes/Detail";
 
 function App() {
-  return null;
+  return <Router>
+    <Switch>
+      <Route path ="/hello">
+        <h1>Hello World!!</h1>
+      </Route>
+      <Route path="/movie/:chili">
+        <Detail />
+      </Route>
+      <Route path="/">
+        <Home />
+      </Route>
+    </Switch>
+    </Router>;
 }
 
 export default App;
@@ -80,4 +98,37 @@ const getMovies = async() => {
     </div>
   );
 }
+
+이후 수정 코드는 모두 Home.js 로 이동
+react에서 페이지 이동을 위한 기능인 router를 사용하기 위함
+
+router는 페이지 전체 로딩없이 다른페이지로 이동처리해줌
+router 사용법은 아주 간단함
+return 안에 하기와 같은 형식으로 추가해주면됨.
+<Router>
+    <Switch>
+
+      <Route path ="/hello">
+        <h1>Hello World!!</h1>
+      </Route>
+
+      <Route path="/movie">
+        <Detail />
+      </Route>
+
+      <Route path="/">
+        <Home />
+      </Route>
+
+      </Switch>
+</Router>;
+
+/movie/:chili 는 chili 라는 이름으로 변수를 받아 오겠다는 뜻(:는 필수, 없으면 주소가 그냥 단순 주소명임)
+실제 변수를 console창에 출력해보면
+{chili: '47943'} 이렇게 변수명과 변수 값이 출력됨
+
+변수를 출력해주는 router내부 함수는
+import {useParams} from "react-router-dom"; 작성 후
+const x = useParams(); 이런식으로 사용해줄수 있음
+const {chili} = useParams(); 도 가능 (단, 주소의 변수명과 일치해야함)
 */
