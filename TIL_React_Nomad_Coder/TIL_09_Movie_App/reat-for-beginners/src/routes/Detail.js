@@ -1,18 +1,29 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {useParams} from "react-router-dom";
 function Detail(){
+    const [detailLoading, setrDetailLoading] = useState(true);
+    const [detail, setDetail] = useState([]);
     const {chili} = useParams();
     const getMovie = async () => {
         const json = await(
             await fetch (`https://yts.mx/api/v2/movie_details.json?movie_id=${chili}`)
             ).json();
-            console.log(json);
-    };
-
+            setDetail(json.data.movie);
+            setrDetailLoading(false);
+    }
 useEffect(()=>{
     getMovie();
 }, []);
-    return <h1>Detail</h1>
+    return (
+        <div>
+        {detailLoading ? (<h1>Loading...</h1>) : (
+            <div>
+                {detail.genre}
+                {console.log(detail)}
+            </div>
+        )}
+        </div>
+    );
 }
 export default Detail;
 
