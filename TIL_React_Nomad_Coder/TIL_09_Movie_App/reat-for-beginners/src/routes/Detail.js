@@ -11,6 +11,7 @@ function Detail(){
             setDetail(json.data.movie);
             setrDetailLoading(false);
     }
+    console.log(detail);
 useEffect(()=>{
     getMovie();
 }, []);
@@ -18,8 +19,14 @@ useEffect(()=>{
         <div>
         {detailLoading ? (<h1>Loading...</h1>) : (
             <div>
-                {detail.genre}
-                {console.log(detail)}
+                <h1>Movie detail</h1>
+                <ul>
+                    {detail.genres.map((g)=>{
+                        {console.log(g)}
+                    <h1>Genre: {g}</h1>
+                    })}
+                    
+                </ul>
             </div>
         )}
         </div>
