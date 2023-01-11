@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.css": "/TIL_FE/TIL_React_Nomad_Coder/TIL_09_Movie_App/reat-for-beginners/static/css/main.edf57991.css",
-    "main.js": "/TIL_FE/TIL_React_Nomad_Coder/TIL_09_Movie_App/reat-for-beginners/static/js/main.0aca4dcb.js",
-    "index.html": "/TIL_FE/TIL_React_Nomad_Coder/TIL_09_Movie_App/reat-for-beginners/index.html",
-    "main.edf57991.css.map": "/TIL_FE/TIL_React_Nomad_Coder/TIL_09_Movie_App/reat-for-beginners/static/css/main.edf57991.css.map",
-    "main.0aca4dcb.js.map": "/TIL_FE/TIL_React_Nomad_Coder/TIL_09_Movie_App/reat-for-beginners/static/js/main.0aca4dcb.js.map"
+    "main.css": "/TIL_FE/static/css/main.edf57991.css",
+    "main.js": "/TIL_FE/static/js/main.0aca4dcb.js",
+    "index.html": "/TIL_FE/index.html",
+    "main.edf57991.css.map": "/TIL_FE/static/css/main.edf57991.css.map",
+    "main.0aca4dcb.js.map": "/TIL_FE/static/js/main.0aca4dcb.js.map"
   },
   "entrypoints": [
     "static/css/main.edf57991.css",
