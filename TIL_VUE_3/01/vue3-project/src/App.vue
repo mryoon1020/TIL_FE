@@ -1,50 +1,54 @@
 <template>
 
+<div class="container">
 <h2>To-Do List</h2>
-  <form 
-    @submit.prevent="onSubmit"
-  >
-    <div>
-      <input
-        type="text" 
-        v-model="todo"
-        placeholder="Type new to-do"
-      >
-    </div>
-    <div>
-      <button
-        class = "btn btn-primary"
-        type="submit"
-      >
-        Add
-      </button>
-    </div>
-  </form>
-  {{todos}}
+  <TodoSimpleFoam @add-todo="addTodo"/>
+
+  <div v-if="!todos.length">
+    <h3>추가된 Todo가 없습니다</h3>
+  </div>
+  <TodoList :todos="todos"/>
+</div>
 </template>
 
 <script>
 import {ref} from 'vue';
+import TodoSimpleFoam from './components/TodoSimpleFoam.vue';
+import TodoList from './components/TodoList.vue';
 
 export default {
+  components:{
+    TodoSimpleFoam,
+    TodoList
+  },
   setup() {
-    const todo = ref('');
-    const todos= ref([]);
 
-    const onSubmit = ()=> {
-      // e.preventDefault();
-      console.log(todo.value)
-      todos.value.push({
-        id: Date.now(),
-        subject: todo.value
-      });
+    const toggle = ref(false);
+    const todos= ref([]); //얘는 app.vue에서 관리해줘야함, TodoList로 옮길수 없음(자식에서 가져와서 부모에 넣고있음)
+    const todoStyle = {
+      textDecoration: 'line-through', color: 'gray'
+    }
 
-        };
+    const addTodo = (todo)=> {
+      console.log(todo)
+      todos.value.push(todo)
+    };
+
+    const onToggle = () => {
+      toggle.value = !toggle.value;
+    }
+
+    const delteTodo = (index) => {
+      todos.value.splice(index, 1);
+    }
 
     return {
-      todo,
-      onSubmit,
+      addTodo,
       todos,
+      toggle,
+      onToggle,
+      todoStyle,
+      delteTodo,
 
     };
 
@@ -54,8 +58,9 @@ export default {
 
 <style>
 
-.name{
+.todo{
   color: red;
+  text-decoration: line-through;
 }
 
 </style>
