@@ -6,28 +6,16 @@
   >
     <div class="card-body p-2 d-flex align-items-center">
       <div class="form-check flex-grow-1">
-      <input 
-        class="form-check-input"
-        type="checkbox"
-        v-model="todo.completed"
-      >
-      <label
-        class="form-check-label"
-        :style="todo.completed ? todoStyle : {}"
-      >style 바인딩으로 처리되는 부분 : &nbsp; {{todo.subject}}</label>
-      </div>
-    </div>
-    <div class="card-body p-2 d-flex align-items-center">
-      <div class="form-check flex-grow-1">
       <input
         class="form-check-input" 
         type="checkbox"
-        v-model="todo.completed"
+        :value="todo.completed"
+        @change="toggleTodo(index)"
       >
       <label
         class="form-check-label"
         :class="{todo: todo.completed}"
-      >class 바인딩으로 처리되는 부분 : &nbsp; {{todo.subject}}</label>
+      >{{todo.subject}}</label>
       </div>
       <div>
       <button
@@ -47,6 +35,22 @@ export default {
             type: Array, //required로 인해서 Array 대신 String 넣으면 오류뜸
             required: true //부모에서 보내는 타입이 Array므로 항상 Array가 필요(Array  빼고 다 못들어오게 함)
         }
+    },
+    emits: ['toggle-todo', 'delete-todo'],
+    setup(props, {emit}){
+      const toggleTodo = (index) => {
+        emit('toggle-todo', index);
+      };
+
+      const delteTodo = (index) => {
+        emit('delete-todo', index);
+      };
+
+
+      return {
+        toggleTodo,
+        delteTodo,
+      }
     }
 }
 </script>

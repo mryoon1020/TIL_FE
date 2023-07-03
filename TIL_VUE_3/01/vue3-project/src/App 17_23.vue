@@ -2,20 +2,22 @@
 
 <div class="container">
 
+<h4>count: {{count}}</h4>
+<h4>double count computed: {{doubleCountComputed}}</h4>
+<h4>double count method: {{doubleCountMethod()}}</h4>
+<h4>double count computed: {{doubleCountComputed}}</h4>
+<h4>double count method: {{doubleCountMethod()}}</h4>
+
+<button @click="count++">Add One</button>
+
 <h2>To-Do List</h2>
-<input
-  type="text" 
-  v-model="searchText"
-  placeholder="Search"
->
-<hr />
   <TodoSimpleFoam @add-todo="addTodo"/>
 
   <div v-if="!todos.length">
     <h3>추가된 Todo가 없습니다</h3>
   </div>
   <TodoList 
-    :todos="filteredTodos" 
+    :todos="todos" 
     @toggle-todo="toggleTodo"
     @delete-todo ="delteTodo"
     />
@@ -23,7 +25,7 @@
 </template>
 
 <script>
-import {computed, ref} from 'vue';
+import {ref, computed} from 'vue';
 import TodoSimpleFoam from './components/TodoSimpleFoam.vue';
 import TodoList from './components/TodoList.vue';
 
@@ -54,16 +56,16 @@ export default {
       console.log(todos.value[index]);
     };
 
-    const searchText = ref('');
-    const filteredTodos = computed(() => {
-      if(searchText.value){
-        return todos.value.filter(todo => {
-          return todo.subject.includes(searchText.value);
-        });
-      }
-      return todos.value;
+    const count = ref(1);
+    const doubleCountComputed = computed(() => {
+      console.log('computed')
+      return count.value *2;
     });
 
+    const doubleCountMethod = () => {
+      console.log('method')
+      return count.value *2;
+    }
 
     return {
       addTodo,
@@ -71,8 +73,9 @@ export default {
       todoStyle,
       delteTodo,
       toggleTodo,
-      searchText,
-      filteredTodos,
+      count,
+      doubleCountComputed,
+      doubleCountMethod,
 
     };
 

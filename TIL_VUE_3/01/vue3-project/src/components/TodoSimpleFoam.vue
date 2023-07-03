@@ -29,14 +29,14 @@
 <script>
 import {ref} from 'vue';
 export default {
-    setup(props, context){
+    setup(props, {emit}){
         const todo = ref('');
         const hasError = ref(false);
         const onSubmit = ()=> {
       if(todo.value === ''){
         hasError.value = true;
       }else{
-        context.emit('add-todo', {
+        emit('add-todo', {
         id: Date.now(),
         subject: todo.value,
         completed: false,
