@@ -45,14 +45,23 @@
                 @click="moveToTodoListPage"
             >Cancel</button>
     </form>
+    <Toast 
+        v-if = "showToast" 
+        :message = "toastMessage"
+        :type = "toastAlertType"
+    />
 </template>
 
 <script>
 import axios from 'axios';
 import {useRoute, useRouter} from 'vue-router'
 import {ref, computed} from 'vue'
-import _ from 'lodash'
+import _ from 'lodash'//lodash는 _로 사용한다고함
+import Toast from '@/components/Toast.vue'
 export default {
+    components: {
+        Toast
+    },
     setup(){
         const route = useRoute();
         const router = useRouter();
@@ -60,13 +69,20 @@ export default {
         const originalTodo = ref(null);
         const loading = ref(true);
         const todoId = route.params.id;
+        const showToast = ref(false);
+        const toastMessage = ref('');
+        const toastAlertType = ref('');
 
         const getTodo = async () => {
-            const res = await axios.get(`http://localhost:3000/todos/${todoId}`);
-            todo.value = {...res.data};
-            originalTodo.value = {...res.data};
-
-            loading.value = false;
+            try{
+                const res = await axios.get(`http://localhost:3000/todos/${todoId}`);
+                todo.value = {...res.data};
+                originalTodo.value = {...res.data};
+                loading.value = false;
+            } catch (error){
+                console.log(error);
+                triggerToast('Something went wrong!!', 'danger');
+            }
         };
 
         const todoUpdated = computed(() => {
@@ -84,12 +100,31 @@ export default {
         };
 
         const onSave = async () => {
-            const res = await axios.put(`http://localhost:3000/todos/${todoId}`, {
-                subject: todo.value.subject,
-                completed: todo.value.completed,
-            });
-            originalTodo.value = {...res.data}//저장후에 save 버튼을 다시 disable로 만들기 위함
+            try{
+                const res = await axios.put(`http://localhost:3000/todos/${todoId}`, {
+                    subject: todo.value.subject,
+                    completed: todo.value.completed,
+                });
+                
+                originalTodo.value = {...res.data};//저장후에 save 버튼을 다시 disable로 만들기 위함
+                triggerToast('Successfully saved!');
+            } catch (error){
+                console.log(error);
+                triggerToast('Somthing went wrong!!', 'danger');
+            }
         };
+
+        const triggerToast = (message, type = 'success') => {
+            toastMessage.value = message;
+            toastAlertType.value = type;
+            showToast.value = true;
+            setTimeout(()=>{
+                toastMessage.value = '';
+                toastAlertType.value = '';
+            showToast.value = false;
+
+            }, 3000)
+        }
 
         getTodo();
         return{
@@ -98,7 +133,10 @@ export default {
             toggleTodoStatus,
             moveToTodoListPage,
             onSave,
-            todoUpdated
+            todoUpdated,
+            showToast,
+            toastMessage,
+            toastAlertType
         }
     }
 }
