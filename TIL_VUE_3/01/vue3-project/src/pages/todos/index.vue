@@ -47,6 +47,11 @@
       </ul>
     </nav>
 </div>
+<Toast 
+  v-if = "showToast" 
+  :message = "toastMessage"
+  :type = "toastAlertType"
+    />
 </template>
 
 <script>
@@ -54,11 +59,13 @@ import {computed, ref, watch} from 'vue';
 import TodoSimpleFoam from '@/components/TodoSimpleFoam.vue';
 import TodoList from '@/components/TodoList.vue';
 import axios from 'axios';
+import Toast from '@/components/Toast.vue'
 
 export default {
   components:{
     TodoSimpleFoam,
-    TodoList
+    TodoList,
+    Toast
   },
   setup() {
 
@@ -68,6 +75,10 @@ export default {
     const limit = 5;
     const currentPage = ref(1);
     const searchText = ref('');
+    const toastMessage = ref('');
+    const toastAlertType = ref('');
+    const showToast = ref(false);
+    const toastTimeout = ref(null);
 
     const numberOfPages = computed (() => {
       //computed 사용으로 numberOfTodos(이함수안에서 사용되는 reactive statement임) 가 변경 될 때마다 재연산해줌
@@ -84,6 +95,7 @@ export default {
       }catch (err) {
         console.log(err);
         error.value = 'something went wrong.';
+        triggerToast('Somthing went wrong!!', 'danger');
       }
     };
 
@@ -107,6 +119,7 @@ export default {
         } catch (err) {
         console.log(err);
         error.value = 'something went wrong.';
+        triggerToast('Somthing went wrong!!', 'danger');
       }
     };
 
@@ -119,6 +132,7 @@ export default {
         } catch(err){
         console.log(err);
         error.value = 'something went wrong.';
+        triggerToast('Somthing went wrong!!', 'danger');
       }
       
     };
@@ -139,6 +153,7 @@ export default {
       }catch(err){
         console.log(err);
         error.value = 'something went wrong.';
+        triggerToast('Somthing went wrong!!', 'danger');
       }
     };
 
@@ -158,6 +173,18 @@ export default {
       
     })
 
+    const triggerToast = (message, type = 'success') => {
+            toastMessage.value = message;
+            toastAlertType.value = type;
+            showToast.value = true;
+            toastTimeout.value = setTimeout(()=>{
+                toastMessage.value = '';
+                toastAlertType.value = '';
+            showToast.value = false;
+
+            }, 5000)
+        };
+
     return {
       addTodo,
       todos,
@@ -170,6 +197,10 @@ export default {
       currentPage,
       getTodos,
       searchTodo,
+      toastMessage,
+      toastAlertType,
+      showToast,
+      triggerToast
 
     };
 
