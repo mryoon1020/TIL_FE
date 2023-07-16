@@ -59,7 +59,8 @@ import {computed, ref, watch} from 'vue';
 import TodoSimpleFoam from '@/components/TodoSimpleFoam.vue';
 import TodoList from '@/components/TodoList.vue';
 import axios from 'axios';
-import Toast from '@/components/Toast.vue'
+import Toast from '@/components/Toast.vue';
+import {useToast} from '@/composables/toast';
 
 export default {
   components:{
@@ -75,15 +76,18 @@ export default {
     const limit = 5;
     const currentPage = ref(1);
     const searchText = ref('');
-    const toastMessage = ref('');
-    const toastAlertType = ref('');
-    const showToast = ref(false);
-    const toastTimeout = ref(null);
 
     const numberOfPages = computed (() => {
       //computed 사용으로 numberOfTodos(이함수안에서 사용되는 reactive statement임) 가 변경 될 때마다 재연산해줌
       return Math.ceil(numberOfTodos.value/limit);
     })
+
+    const {
+      showToast,
+      toastMessage,
+      toastAlertType,
+      triggerToast
+    } = useToast();
 
     const getTodos = async (page = currentPage.value) => {
       currentPage.value = page;
@@ -172,18 +176,6 @@ export default {
       }, 2000)// 2000 = 2초, 2초후에 getTodos()실행
       
     })
-
-    const triggerToast = (message, type = 'success') => {
-            toastMessage.value = message;
-            toastAlertType.value = type;
-            showToast.value = true;
-            toastTimeout.value = setTimeout(()=>{
-                toastMessage.value = '';
-                toastAlertType.value = '';
-            showToast.value = false;
-
-            }, 5000)
-        };
 
     return {
       addTodo,

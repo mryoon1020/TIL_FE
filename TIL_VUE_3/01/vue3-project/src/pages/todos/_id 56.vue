@@ -73,12 +73,34 @@ export default {
         const loading = ref(true);
         const todoId = route.params.id;
 
+        // const showToast = ref(false);
+        // const toastMessage = ref('');
+        // const toastAlertType = ref('');
+        // const timeout = ref(null);
+        // const triggerToast = (message, type = 'success') => {
+        //     toastMessage.value = message;
+        //     toastAlertType.value = type;
+        //     showToast.value = true;
+        //     timeout.value = setTimeout(()=>{
+        //         toastMessage.value = '';
+        //         toastAlertType.value = '';
+        //     showToast.value = false;
+        //     }, 5000)
+        // };
+
     const {
         showToast,
         toastMessage,
         toastAlertType,
         triggerToast
     } = useToast();
+
+        // onUnmounted(() => {
+        //     console.log('unmounted');
+        //     clearTimeout(timeout.value); 
+        //     //수정후 바로 다른페이지 넘어가면 setTimeout이 사용되지 못하도록 처리함
+        //     //메모리 누수방지
+        // })//composible/toast.js로 뺐음
 
         const getTodo = async () => {
             try{
