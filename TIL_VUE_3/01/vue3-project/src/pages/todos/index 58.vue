@@ -20,6 +20,8 @@
   @keyup.enter="searchTodo"
 >
 <hr />
+  <TodoSimpleFoam @add-todo="addTodo"/>
+  <div style="color: red">{{error}}</div>
 
   <div v-if="!todos.length">
     <h3>표시할 데이터가 없습니다</h3>
@@ -71,9 +73,11 @@ import axios from 'axios';
 import Toast from '@/components/Toast.vue';
 import {useToast} from '@/composables/toast';
 import {useRouter} from 'vue-router';
+import router from '@/router';
 
 export default {
   components:{
+    TodoSimpleFoam,
     TodoList,
     Toast
   },
