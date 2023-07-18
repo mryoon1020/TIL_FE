@@ -15,12 +15,6 @@
                         type="text" 
                         class="form-control"
                     >
-                    <div 
-                        v-if="subjectError"
-                        style="color: red"
-                    >
-                        {{subjectError}}
-                    </div>
                 </div>
             </div>
             <div v-if="editing" class="col-6">
@@ -59,14 +53,11 @@
                 @click="moveToTodoListPage"
             >Cancel</button>
     </form>
-    <transition name='fade'>
-        <!-- v-if 대신 v-show도 사용가능 -->
-        <Toast
-            v-if = "showToast" 
+    <Toast 
+        v-if = "showToast" 
         :message = "toastMessage"
-            :type = "toastAlertType"
-        />
-    </transition>
+        :type = "toastAlertType"
+    />
 </template>
 
 <script>
@@ -103,7 +94,6 @@ export default {
             computed: false,
             body: '',
         });
-        const subjectError =ref('');
         const originalTodo = ref(null);
         const loading = ref(false);
         const todoId = route.params.id;
@@ -148,31 +138,14 @@ export default {
         };
 
         const onSave = async () => {
-            subjectError.value = '';
-            if(!todo.value.subject){
-                subjectError.value = 'Subject is required!';
-                return;
-            }
             try{
-                let res;
-                const data = {
+                const res = await axios.put(`http://localhost:3000/todos/${todoId}`, {
                     subject: todo.value.subject,
                     completed: todo.value.completed,
-                    body: todo.value.body,
-                };
-
-                if(props.editing){
-                    res = await axios.put(`http://localhost:3000/todos/${todoId}`, data);
-                    originalTodo.value = {...res.data};//저장후에 save 버튼을 다시 disable로 만들기 위함
-                } else{
-                    res = await axios.post(`http://localhost:3000/todos`, data);
-                    todo.value.subject = '';
-                    todo.value.body = '';
-                }
-
+                });
                 
-                const msg = 'Successfully ' + (props.editing ? 'Updated!!' : 'Created!!');
-                triggerToast(msg);
+                originalTodo.value = {...res.data};//저장후에 save 버튼을 다시 disable로 만들기 위함
+                triggerToast('Successfully saved!');
             } catch (error){
                 console.log(error);
                 triggerToast('Somthing went wrong!!', 'danger');
@@ -192,28 +165,12 @@ export default {
             todoUpdated,
             showToast,
             toastMessage,
-            toastAlertType,
-            subjectError,
+            toastAlertType
         }
     }
 }
 </script>
 
 <style>
-    .fade-enter-active,
-    .fade-leave-active {
-        transition: all 0.5s ease;
-    }
 
-    .fade-enter-from,
-    .fade-leave-to{
-        opacity: 0;/**투명해짐*/
-        transform: translateY(-30px);/**위에서 내려옴 (translate는 왼쪽에서 나옴)*/
-    }
-
-    .fade-enter-to,
-    .fade-leave-from{
-        opacity: 1;/**진해짐 */
-        transform: translateY(0px);/**위로 들어감 (translate는 왼쪽으로 들어감)*/
-    }
 </style>
