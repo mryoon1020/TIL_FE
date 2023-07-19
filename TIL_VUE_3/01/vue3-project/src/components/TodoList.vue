@@ -9,32 +9,43 @@
       style="cursor: pointer"
       @click="moveToPage(todo.id)"
     >
-      <div class="form-check flex-grow-1">
-      <input
-        class="form-check-input" 
-        type="checkbox"
-        :value="todo.completed"
-        @change="toggleTodo(index, $event)"
-        @click.stop
-      >
-      <label
-        class="form-check-label"
-        :class="{todo: todo.completed}"
-      >{{todo.subject}}</label>
+      <div class="flex-grow-1">
+        <input
+          class="ml-2 mr-2"
+          type="checkbox"
+          :value="todo.completed"
+          @change="toggleTodo(index, $event)"
+          @click.stop
+        >
+        <span
+          :class="{todo: todo.completed}"
+        >
+          {{todo.subject}}
+        </span>
       </div>
       <div>
       <button
         class="btn btn-danger btn-sm"
-        @click.stop="delteTodo(index)"
+        @click.stop="openModal(todo.id)"
       >delete</button>
       </div>
     </div>
   </div>
+  <Modal 
+    v-if="showModal"
+    @close="closeModal"
+  />
 </template>
 
 <script>
 import {useRouter} from 'vue-router';
+import Modal from '@/components/Modal.vue';
+import {ref} from 'vue';
+
 export default {
+  components: {
+    Modal
+  },
     // props: ['todos']
     props: {
         todos:{ //이렇게 오브젝트로 잡으면 타입설정도 가능
@@ -43,12 +54,27 @@ export default {
         }
     },
     emits: ['toggle-todo', 'delete-todo'],
+
     setup(props, {emit}){
+
       const router = useRouter();
+      const showModal = ref(false);
+      const todoDeleteId = ref(null);
+
       const toggleTodo = (index, event) => {
         emit('toggle-todo', index, event.target.checked);
         //event.target.checked 이벤트에 직접 접근했음
       };
+
+      const openModal = (id) => {
+        todoDeleteId.value = id;
+        showModal.value = true;
+      }
+
+      const closeModal = (id) => {
+        todoDeleteId.value = null;
+        showModal.value = false;
+      }
 
       const delteTodo = (index) => {
         emit('delete-todo', index);
@@ -68,7 +94,10 @@ export default {
       return {
         toggleTodo,
         delteTodo,
-        moveToPage
+        moveToPage,
+        showModal,
+        openModal,
+        closeModal
       }
     }
 }

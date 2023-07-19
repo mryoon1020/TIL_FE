@@ -137,6 +137,10 @@ export default {
       }
     };
 
+    const openModal = () => {
+      
+    }
+
     const delteTodo = async (index) => {
       error.value = '';
       const id = todos.value[index].id;
@@ -211,6 +215,7 @@ export default {
       showToast,
       triggerToast,
       moveToCreatePage,
+      openModal
 
     };
 
