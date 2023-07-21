@@ -3,7 +3,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Delete Todo</h5>
             <button 
                 type="button" 
                 class="close" 
@@ -13,7 +13,7 @@
             </button>
         </div>
         <div class="modal-body">
-            ...
+            Are you sure you want to delete the todo??
         </div>
         <div class="modal-footer">
             <button 
@@ -23,7 +23,13 @@
             >
                 Close
             </button>
-            <button type="button" class="btn btn-primary">Save changes</button>
+            <button 
+                type="button" 
+                class="btn btn-danger"
+                @click="onDelete"
+            >
+            Delete
+            </button>
         </div>
         </div>
     </div>
