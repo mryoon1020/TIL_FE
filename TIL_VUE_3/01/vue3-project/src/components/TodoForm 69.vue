@@ -22,6 +22,15 @@
                         {{subjectError}}
                     </div>
                 </div> -->
+                <!-- <Input 
+                    :label="Subject"
+                    :subject="todo.subject"
+                    :error="sunjectError"
+                    @update-subject="updateTodoSubject"
+                /> -->
+                <!-- 이런식으로 함수를 잔뜩 만들고 많이 복잡한 방식으로 처리하는 방법도 있으나 
+                    하기 코드처럼 v-model을 활용하여 간단하게 굳이 함수 만들필요없이 처리가능
+                    -->
                 <Input 
                     :label="Subject"
                     v-model:subject="todo.subject"
@@ -77,7 +86,7 @@
 <script>
 import axios from 'axios';
 import {useRoute, useRouter} from 'vue-router'
-import {ref, computed, onUpdated} from 'vue'
+import {ref, computed} from 'vue'
 import _ from 'lodash'//lodash는 _로 사용한다고함
 import Toast from '@/components/Toast.vue'
 import {useToast} from '@/composables/toast';
@@ -110,10 +119,6 @@ export default {
             computed: false,
             body: '',
         });
-    onUpdated(() => {
-        console.log(todo.value.subject);
-    });
-
         const subjectError =ref('');
         const originalTodo = ref(null);
         const loading = ref(false);
@@ -190,6 +195,11 @@ export default {
             }
         };
 
+        const updateTodoSubject = (newValue) => {
+            todo.value.subject = newValue;
+            console.log(todo.value.subject);
+        };
+
         if(props.editing){
             getTodo();
         }
@@ -205,6 +215,7 @@ export default {
             toastMessage,
             toastAlertType,
             subjectError,
+            updateTodoSubject,
         }
     }
 }

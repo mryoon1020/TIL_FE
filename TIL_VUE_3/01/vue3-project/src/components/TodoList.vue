@@ -1,53 +1,59 @@
 <template>
-<div
+<!-- <div
     v-for="(todo, index) in todos"
     :key="todo.id"
     class = "card mt-2"
+  > -->
+  <List
+    :items="todos"
   >
+  <template #default="{item, index}">
     <div 
       class="card-body p-2 d-flex align-items-center"
       style="cursor: pointer"
-      @click="moveToPage(todo.id)"
+      @click="moveToPage(item.id)"
     >
       <div class="flex-grow-1">
         <input
           class="ml-2 mr-2"
           type="checkbox"
-          :value="todo.completed"
+          :value="item.completed"
           @change="toggleTodo(index, $event)"
           @click.stop
         >
         <span
-          :class="{todo: todo.completed}"
+          :class="{todo: item.completed}"
         >
-          {{todo.subject}}
+          {{item.subject}}
         </span>
       </div>
       <div>
       <button
         class="btn btn-danger btn-sm"
-        @click.stop="openModal(todo.id)"
+        @click.stop="openModal(item.id)"
       >delete</button>
       </div>
     </div>
-  </div>
+    </template>
+  </List> 
+  <!-- </div> -->
   <Modal 
     v-if="showModal"
     @close="closeModal"
     @delete="delteTodo"
-  >
-  Delete todo!!
-  </Modal>
+  />
 </template>
 
 <script>
 import {useRouter} from 'vue-router';
-import Modal from '@/components/Modal.vue';
+import Modal from '@/components/DeleteModal.vue';
 import {ref} from 'vue';
+import List from '@/components/List.vue';
 
 export default {
   components: {
-    Modal
+    Modal,
+    List
   },
     // props: ['todos']
     props: {
