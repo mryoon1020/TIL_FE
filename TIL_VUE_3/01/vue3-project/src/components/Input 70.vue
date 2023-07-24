@@ -17,7 +17,6 @@
 </template>
 
 <script>
-import { useContext } from 'vue';
 export default {
     props: {
         label: {
@@ -33,10 +32,7 @@ export default {
             required: true,
         }
     },
-    setup(){
-        // const context = useContext(); //설명을 위해 추가된 부분
-        //context가 파라미터로 받는 props, { emit } 와 같음 따라서 하기 코드와 같이사용가능
-        const { emit } = useContext;//이렇게 하면 setUp함수의 파라미터를 지울수 있음
+    setup(props, { emit }){
         const onInput = (e) => {
             console.log(e.target.value);
             emit('update:subject', e.target.value);
