@@ -67,7 +67,7 @@
 import {computed, ref, watch} from 'vue';
 import TodoSimpleFoam from '@/components/TodoSimpleFoam.vue';
 import TodoList from '@/components/TodoList.vue';
-import axios from 'axios';
+import axios from '@/axios';
 import Toast from '@/components/Toast.vue';
 import {useToast} from '@/composables/toast';
 import {useRouter} from 'vue-router';
@@ -103,7 +103,7 @@ export default {
       currentPage.value = page;
       try{
         const res = await axios.get(
-        `http://localhost:3000/todos?_sort=id&_order=desc&subject_like=${searchText.value}&_page=${page}&_limit=${limit}`);
+        `todos?_sort=id&_order=desc&subject_like=${searchText.value}&_page=${page}&_limit=${limit}`);
         numberOfTodos.value = res.headers['x-total-count']
         todos.value = res.data;
       }catch (err) {
@@ -123,7 +123,7 @@ export default {
       error.value = '';
       
       try{
-          await axios.post('http://localhost:3000/todos', {
+          await axios.post('todos', {
             subject: todo.subject,
             completed: todo.completed
           });
@@ -142,7 +142,7 @@ export default {
       error.value = '';
 
       try{
-          await axios.delete('http://localhost:3000/todos/'+id)
+          await axios.delete('todos/'+id)
           getTodos(1);
         } catch(err){
         console.log(err);
@@ -159,7 +159,7 @@ export default {
       error.value = '';
       const id = todos.value[index].id;
       try{
-        await axios.patch('http://localhost:3000/todos/'+id,{
+        await axios.patch('todos/'+id,{
             // completed: !todos.value[index].completed // 이렇게 써도 되지만 정확하진 않음, 다른쪽에서 클릭해서 바뀔수 있음
             completed: checked//좀더 정확한 event 결과를 가져오기 위해 checked를 받아옴
         });

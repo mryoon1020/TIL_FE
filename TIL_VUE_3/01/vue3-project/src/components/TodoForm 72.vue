@@ -75,7 +75,7 @@
 </template>
 
 <script>
-import axios from '@/axios';//axios.js에 있는 http base url을 사용하기 위함
+import axios from 'axios';
 import {useRoute, useRouter} from 'vue-router'
 import {ref, computed, onUpdated} from 'vue'
 import _ from 'lodash'//lodash는 _로 사용한다고함
@@ -130,7 +130,7 @@ export default {
                 loading.value = true;
             try{
 
-                const res = await axios.get(`todos/${todoId}`);
+                const res = await axios.get(`http://localhost:3000/todos/${todoId}`);
                 todo.value = {...res.data};
                 originalTodo.value = {...res.data};
                 loading.value = false;
@@ -173,10 +173,10 @@ export default {
                 };
 
                 if(props.editing){
-                    res = await axios.put(`todos/${todoId}`, data);
+                    res = await axios.put(`http://localhost:3000/todos/${todoId}`, data);
                     originalTodo.value = {...res.data};//저장후에 save 버튼을 다시 disable로 만들기 위함
                 } else{
-                    res = await axios.post('todos', data);
+                    res = await axios.post(`http://localhost:3000/todos`, data);
                     todo.value.subject = '';
                     todo.value.body = '';
                 }
