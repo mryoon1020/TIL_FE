@@ -184,6 +184,13 @@ export default {
                 
                 const msg = 'Successfully ' + (props.editing ? 'Updated!!' : 'Created!!');
                 triggerToast(msg);
+
+                if(!props.editing){
+                    router.push({
+                        name: 'Todos'
+                    })
+                }
+
             } catch (error){
                 console.log(error);
                 triggerToast('Somthing went wrong!!', 'danger');
