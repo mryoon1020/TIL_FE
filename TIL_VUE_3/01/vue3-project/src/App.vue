@@ -28,6 +28,7 @@ export default {
   },
 
   setup(){
+
       const {
         showToast,
         //같은 컴포넌트에서 불러와서 쓰지만 타 컴포넌트에서 사용되는 
@@ -39,6 +40,7 @@ export default {
         triggerToast
     } = useToast()
 
+    console.log(showToast.value);
     return {
         showToast,
         toastMessage,

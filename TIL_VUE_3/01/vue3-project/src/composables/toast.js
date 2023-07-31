@@ -1,10 +1,13 @@
-import {ref, onUnmounted} from 'vue';
-export const useToast = () => {
+import {computed, onUnmounted} from 'vue';
+import {useStore} from 'vuex';
 
-    const showToast = ref(false);
-    const toastMessage = ref('');
-    const toastAlertType = ref('');
-    const timeout = ref(null);
+export const useToast = () => {
+    const store = useStore();
+    const showToast = computed(() => store.state.showToast);
+    // computed로 감싸지 않으면 값의 변경을 vuex가 감지하지 못함, vuex홈페이지 사용
+    const toastMessage = computed(() => store.state.toastMessage);
+    const toastAlertType = computed(() => store.state.toastAlertType);
+    const timeout = computed(() => store.state.timeout);
     const triggerToast = (message, type = 'success') => {
         toastMessage.value = message;
         toastAlertType.value = type;
