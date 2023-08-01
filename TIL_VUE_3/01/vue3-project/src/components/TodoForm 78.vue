@@ -64,6 +64,14 @@
                 @click="moveToTodoListPage"
             >Cancel</button>
     </form>
+    <transition name='fade'>
+        <!-- v-if 대신 v-show도 사용가능 -->
+        <Toast
+            v-if = "showToast" 
+        :message = "toastMessage"
+            :type = "toastAlertType"
+        />
+    </transition>
 </template>
 
 <script>
@@ -71,11 +79,13 @@ import axios from '@/axios';//axios.js에 있는 http base url을 사용하기 �
 import {useRoute, useRouter} from 'vue-router'
 import {ref, computed, onUpdated} from 'vue'
 import _ from 'lodash'//lodash는 _로 사용한다고함
+import Toast from '@/components/Toast.vue'
 import {useToast} from '@/composables/toast';
 import Input from '@/components/Input.vue';
 
 export default {
     components: {
+        Toast,
         Input
     },
     props: {
@@ -208,5 +218,20 @@ export default {
 </script>
 
 <style>
+    .fade-enter-active,
+    .fade-leave-active {
+        transition: all 0.5s ease;
+    }
 
+    .fade-enter-from,
+    .fade-leave-to{
+        opacity: 0;/**투명해짐*/
+        transform: translateY(-30px);/**위에서 내려옴 (translate는 왼쪽에서 나옴)*/
+    }
+
+    .fade-enter-to,
+    .fade-leave-from{
+        opacity: 1;/**진해짐 */
+        transform: translateY(0px);/**위로 들어감 (translate는 왼쪽으로 들어감)*/
+    }
 </style>
