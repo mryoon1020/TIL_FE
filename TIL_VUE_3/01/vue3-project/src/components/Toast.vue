@@ -5,9 +5,9 @@
         v-for="toast in toasts"
         :key="toast.id"
         class="alert" 
-        :class="`alert-${type}`"
+        :class="`alert-${toast.type}`"
         role="alert">
-        {{ toastMessage }}
+        {{ toast.message }}
     </div>
     </transition-group>
 </div>

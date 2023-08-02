@@ -1,0 +1,908 @@
+index.html 에서 app.vue를 읽어 옴
+
+package.json
+
+  "scripts": {
+    "serve": "vue-cli-service serve", //개발서버 실행용
+    "build": "vue-cli-service build", 
+    "lint": "vue-cli-service lint"
+  },
+
+뷰컴포넌트는 세부분
+
+template : html
+
+script : 자바스크립트
+
+style : css
+
+setup() 안에서 여러가지 함수 정의 및 사용 가능
+
+ref 안에 문자 숫자 배열 오브젝트 다가능
+
+
+const name = reactive({});
+
+reactice => 오브젝트, 어레이만, .value 없어도됨
+
+데이터 바인딩 => 데이터를 연결해주는것(ref와 value를) => input에서 사용가능
+
+v-bind:value="name" 이런식으로 => 타임도 v-vind 가능
+v-bind 생략 가능 그냥 : 만 써도됨
+
+v-on => @로 생략 가능
+
+@input => value 값을 연결해줌
+
+  <input  type="text" 
+    :value="name"
+    @input="updateName"
+  >
+
+    // const updateName = (e) => {
+    //     // console.log(e.target.value);
+    //     name.value = e.target.value;
+    // }
+
+이런거 다필요없는 개선판은 이것
+
+  <input  type="text" 
+    v-model="name"
+  >
+
+value 바인딩 , update도 해줌 => 양방향 바인딩
+
+form 은 submit 되면 화면이 reloading 됨
+e.preventDefault(); 요걸로 해결해도됨
+<form 
+    @submit.prevent="onSubmit"
+  > 이렇게도 가능
+----------------------------------
+  <div
+    v-for="원하는 변수명(아무거나 가능) in 반복을 하고싶은 배열 또는 집합"
+    :key="유일성이 보장되는 기준"
+  >
+  </div>
+------------예시------------
+  <div
+    v-for="todo in todos"
+    :key="todo.id"
+  >
+    <div>
+      <h4>{{todo.subject}}</h4>
+    </div>
+  </div>
+
+------------------------------
+  <div
+    v-for="i in 10"
+    :key="i"
+  >
+    {{i}}
+  </div>
+1 2 3 4 5 6 7 출력할 수 있음
+-------------------------------
+<div
+    v-for="(todo, index) in todos"
+    :key="todo.id"
+  >
+이렇게 index를 받아올수도 있음
+-------------------------------
+
+<div v-show="toggle">true</div>
+<div  v-show="!toggle">false</div>
+<button @click="onToggle">v-show T/F 변경</button>
+    const onToggle = () => {
+      toggle.value = !toggle.value;
+    }
+
+요런식으로 보여주고 안보여주고 정할수 있음
+
+v-if 토글비용이 많이 들음 => 조건이 거의 안바뀔때
+v-show 렌더비용이 많이 들음 => 토글 자주할때
+
+
+스타일도 이런식으로 바인딩 가능
+
+:style="todo.completed ? todoStyle : {}"
+변수부분
+const todoStyle = {
+      textDecoration: 'line-through', color: 'gray'
+    }
+
+클래스도 가능
+
+컴포넌트 => template, script, style 세개로 구성됨
+
+import 이름 from '경로/이름.vue';
+=> 해당경로에 있는 vue파일에서 가져와서 해당이름으로 사용한다, 아무이름써도 되지만 컴포넌트 이름으로 하는게 더 좋음
+
+컴포넌트로 사용 => 그냥 components 폴더 밑에다가 vue 파일 만들고 export default 사용해서 하고
+사용처에서는 export default에 component: 컴포넌트 이름 이렇게 등록해서 쓰면된다
+컴포넌트 사용시 연결하려면 emit을 알아야 함
+
+부모컴포넌트 => 컴포넌트를 사용하는 쪽
+자식컴포넌트 => 사용당하는 쪽
+
+자식에서 부모로 데이터 보낼때는 필요한것이 context안에 들어잇음 => context.emit('이벤트이름', 보낼데이터)으로 사용
+--------------예시-------------------
+context.emit('add-todo', {
+        id: Date.now(),
+        subject: todo.value,
+        completed: false,
+        });
+
+사용하는쪽에서는 <TodoSimpleFoam @add-todo="addTodo"/> 이렇게 씀 @이벤트 이름 = "부모컴포넌트에있는함수명"
+-----함수------
+    const addTodo = (todo)=> {
+      console.log(todo)
+      todos.value.push(todo)
+    };
+-------------------------------------
+부모 => 자식 데이터 보낼때는 props를 통해서 보냄
+<컴포턴트명 :원하는아무이름="보내는데이터"/>
+<TodoList :todos="todos"/> 요렇게
+-------자식컴포넌트에서는 이렇게 한다-------
+export default {
+    props: ['부모컴포넌트에서 설정했던 이름']
+}
+요렇게
+export default {
+    props: ['todos']
+}
+
+props => 부모에서 자식만 됨, 따라서 부모에서 변경된것은 자식에서도 변경이됨
+	=> 반대로 자식에서 props로 받은 데이터를 직접적으로 부모에서 받은 데이터를 변경하면 안됨
+
+-------<예시>---------
+      <input
+        class="form-check-input" 
+        type="checkbox"
+        v-model="todo.completed"
+      >
+
+v-model은 양방향 바인딩임
+props : 단방향
+
+--------변경-------
+      <input
+        class="form-check-input" 
+        type="checkbox"
+        :value="todo.completed"
+        @change="toggleTodo(index)"
+      >
+index=> v-for돌때 index임
+-----------------------------------------------
+    setup(props, context){
+      const toggleTodo = (index) => {
+        context.emit('toggle-todo', index);
+      };
+}
+-----------------------변경-------------------
+    setup(props, {emit}){
+      const toggleTodo = (index) => {
+        emit('toggle-todo', index);
+      };
+
+요렇게 emit 만 받아서 직접 사용도 가능
+
+computed property : 스테이트를 사용할때 스테이트가 다른스테이트에 의존할때 사용하는것
+computed 는 파라미터를 받을수 없음, 값을 캐쉬를 하고있음 => 중복사용시 처음 계산값을 출력함, 함수처럼 호출될때마다 연산하지 않음
+
+---------------------------------------------
+<h4>count: {{count}}</h4>
+<h4>double count computed: {{doubleCountComputed}}</h4>
+<h4>double count method: {{doubleCountMethod()}}</h4>
+<h4>double count computed: {{doubleCountComputed}}</h4>
+<h4>double count method: {{doubleCountMethod()}}</h4>
+
+    const count = ref(1);
+    const doubleCountComputed = computed(() => {
+      console.log('computed')
+      return count.value *2;
+    });
+
+    const doubleCountMethod = () => {
+      console.log('method')
+      return count.value *2;
+    }
+
+요렇게 썼을 때 console에는 computed는 한번, method는 2번 찍힘
+
+.filter() => array에서 사용되는 함수, 말그대로 조건에 맞는 값만 리턴하게 해줌
+.filter(element => {}) => element 에는 배열의 값이 하나씩 들어감
+
+json-server 실행위해서
+get-ExecutionPolicy => 현재 권한 확인
+Set-ExecutionPolicy RemoteSigned => RemoteSigned 로 권한 변경
+get-ExecutionPolicy로 확인후 
+json-server --watch db.json 시행
+---참고---
+
+- 권한 상태값
+
+ Restricted : default설정값으로, 스크립트 파일을 실행할 수 없습니다.
+
+ AllSigned : 신뢰할 수 있는(서명된) 스크립트 파일만 실행할 수 있습니다.
+
+ RemoteSigned : 로컬에서 본인이 생성한 스크립트와, 신뢰할 수 있는(서명된) 스크립트 파일 실행할 수 있습니다.
+
+ Unrestricted : 모든 스크립트 실행가능
+
+ ByPass : 경고/차단 없이 모든 것을 실행가능하도록함
+
+ Undefined : 권한을 설정하지 않겠음
+
+/put => 데이터 전체 변경
+/patch => 부분데이터 변경
+
+res.headers['x-total-count'] => 대쉬가 들어가면 . 대신 이런식으로 표기
+res.headers.x-total-count => 이거랑 같은 뜻이지만 대쉬가 있으므로 오류가 남
+
+style="cursor: pointer" => 올렸을 때 커서가 손가락 모양으로 바뀜
+
+----------------------------------------------------------------
+const currentPage = ref(1);
+
+watchEffect(() => {
+      console.log(currentPage.value);
+console.log(numberOfTodos.value);
+    });
+
+currentPage.value, numberOfTodos.value가 바뀔때마다 바뀐 console에 찍힐거임
+최초에는 1, 0 찍힌후 numberOfTodos.value가 db에서 읽어지고 바뀌게 되면 1, 12가 다시 찍힘
+reactive, props, computed 역시 넣으면 바뀔때마다 실행됨 => reactive status가 아니면 실행되지 않음
+
+----------------------------------------
+단일소스일떄
+
+watch(ref인 변수, (변경된값, 변경되기전 값)=>{})
+
+    watch(currentPage, (currentPage, prev) => {
+      console.log(currentPage, prev)
+    });
+요렇게씀 => 얘도 ref가 변할때마다 실행됨, reactive 도 동일하게 사용 가능
+
+---------------------------------------
+여러개일때
+const reactiveSample = reactive({
+      a: 1,
+      b: 2,
+      c: 3
+    })
+
+    watch(()=> [reactiveSample.a, reactiveSample.b], (current, prev) => {
+      console.log(current, prev)
+    });
+    reactiveSample.a = 100;
+
+(2) [100, 2] (2) [1, 2] 요렇게 출력됨
+
+--------------------------
+ref도 이렇게
+
+    watch([currentPage, numberOfTodos], (current, prev) => {
+      console.log(current, prev)
+    });
+
+(2) [1, '12'] (2) [1, 0] 이렇게 출력됨
+
+그냥 변경을 감지하고 싶은것들을 배열[] 로 묶어주면 됨
+
+setTimeout(()=>{}, 지연시간) => 지연시간만큼 시간이 흐른후 함수실행
+
+-------------------------------------------------------------------
+이런식으로 활용함
+    
+let timeout = null;
+    watch(searchText, () => {
+      clearTimeout(timeout);
+//기존 이벤트가 걸려있는 것을 취소함, 이거 없으면 2초마다 이벤트가 발생하게되어 타임아웃설정한 의미가 없어짐
+//이거 없으면 new 친다고 가정할때, 2초후 n 전송, 2초후 ne 전송, 2초후 new 전송이됨
+      setTimeout(()=>{
+          getTodos(1);//1이 들어가는 이유는 항상 첫페이지를 띄우기 위함임
+      }, 2000)// 2000 = 2초, 2초후에 getTodos()실행
+      
+    })
+
+-------------------------------------
+@keyup.enter="" => 엔터키를 쳤을때 이벤트 설정(키가 눌렸다 올라왔을때) 
+
+---------------------------------------
+router 사용시 main.js에
+import router from './router'
+createApp(App).use(router).mount('#app')
+요렇게 use(router)을 써줘야함
+
+App.vue에
+<router-view /> 이거 써주면 컴포넌트가 들어옴 => 주소 변경될때마다 그거에 맞는 컴포넌트가 들어옴
+
+----------------------------------------
+
+주소앞에 @를 사용하면 @자체가 src폴더를 가리키고 있음
+
+router-link를 사용하면 페이지를 reloading없이 바로 가져옴
+  <router-link class="navbar-brand" to="/">TO-DO</router-link>이렇게 사용
+
+<router-link class="navbar-brand" :to="{name: 'Home'}">TO-DO</router-link>
+
+이렇게 바인딩을 통해서 사용할 수도 있음
+- router/index.js에 등록된 name을 통해 이동 가능, 단.파라미터가 필요한 경우 오류가 뜸
+
+router 작동원리
+
+브라우저 도메인요청 => 서버요청 => html(public 및에있는 index.html), js => js,vue.js가 하나의 코드로 합쳐짐 +다운로드
+
+-----------------------------------------------
+vue/multi-word-component-names 오류해결 방법
+=> vue.js에서 원하는 이름 작성은 2개이상의 단어의 조합으로 .vue파일을 만드는 것이므로
+실행에는 문제없으나 계속 eslint 오류메세지가 뜸
+
+해결방법
+vue.config.js폴더로 들어가서 다음과 같이 작성하고 서버를 재실행하면 해결됨
+단, 다른 에러도 볼수 없게 됨
+
+const { defineConfig } = require('@vue/cli-service')
+module.exports = defineConfig({
+  transpileDependencies: true,
+  lintOnSave: false //이걸 추가해주면 됨
+})
+
+-----------------------
+이벤트 버블링 => 이벤트가 마지막 부모의 이벤트까지 다 실행되는 것
+
+      <button
+        class="btn btn-danger btn-sm"
+        @click.stop="delteTodo(index)"
+      >delete</button>
+
+요렇게 @click뒤에 .stop을 사용하면 이벤트  버블링이 사라짐
+------------------------------------------------------
+      <input
+        class="form-check-input" 
+        type="checkbox"
+        :value="todo.completed"
+        @change="toggleTodo(index)"
+        @click.stop
+      >
+여기서 @change.stop을 하게되면 click이벤트 다음에 chage이벤트가 전파되므로 click을 stop해줘야함
+
+또는
+
+      <input
+        class="form-check-input" 
+        type="checkbox"
+        :value="todo.completed"
+        @click.stop="toggleTodo(index)"
+        
+      >
+요렇게 처리해도 됨
+
+@change="toggleTodo(index, $event)"
+
+$event를 통해서 이벤트를 받아올 수 있음
+
+----------------------------------------
+자바스크립트 객체 복사/비교
+
+원시타입 : 숫자, string, boolean, undefined 등
+참조타입 : object, function, array 등
+<예시>
+a =  4
+b = 4
+
+a === b => true
+
+원시타입은 값자체를 비교하기 때문에 이렇게됨
+
+c = {a:1}
+d = {a:1}
+
+c === d => false
+
+참조타입은 메모리의 주소값을 변수에 담기때문에 이렇게됨
+
+e = d
+
+e = {a:1}
+
+d === e => true
+같은 주소값을 갖기 때문에 이러한 결과가 나옴
+
+d.a = 2
+
+d={a:2}
+e={a:2}
+이렇게 됨 => 같은 주소값을 참조하기 때문임
+c={a:1}
+c는 d,e와 다른 주소값을 갖기 때문
+
+a ={q:1}
+b = a
+a === b => true
+다른 주소를 참조하면서 값만 같게 하고 싶을때는
+c = {...a} 이렇게 처리하게되면 값만 같은 값이오게 됨
+a === c => false
+
+마찬가지로 a.q = 4를 해도 c의 값에는 변동이 없음
+
+값이 같은지 비교하고 싶을때 방법은 다음과 같음
+a.a === b.a 또는
+JSON.stringify(a) === JSON.stringify(b) ====> 이방법은 순서가 다를경우 비교가 어려움
+
+lodash라이브러리는 순서가 달라도 비교가능
+
+_.isEqual(c, e) 이렇게 사용하면 됨(단, 라이브러리등록되어있어야함)
+
+-------------------------------------
+vue.js 컴포넌트 생명주기
+
+setUp()가 제일 먼저 스캔이됨
+그다음에 
+onBeforeMount(), onMount()를 실행함
+
+onBeforMount()는 dom에 올라가지 않은 상태에서 실행되기 때문에 접근을 할 수 없음
+
+onMounted() dom에 올라간후에 실행되므로 접근 가능
+
+onBeforeUpdate() => 스테이트 변경전
+onUpdated() => 스테이트 변경후
+--------------------------
+컴포넌트가 존재하면 밑에 두함수는 실행되지 않음 다른페이지로 가게되면 실행이됨
+onBeforeUnmount() => 기존 컴포넌트들이 돔에서 빠지기전에 메모리누수방지로 메모리정리할때 씀 onUnmounted전에 실행됨
+onUnmounted() => 돔에서 빠져나가기전에 실행됨 그다음 돔에서 빠져나감
+
+---------------------------
+
+vue router에서는 순서가 중요함
+
+예를들어
+
+        {
+            path: '/todos/create',
+            name: 'TodoCreate',
+            component: TodoCreate
+        },
+        {
+            path: '/todos/:id',
+            name: 'Todo',
+            component: Todo
+        },
+
+이경우에서는 create 먼저 읽고 그다음으로 가기 때문에 괜찮지만
+        {
+            path: '/todos/:id',
+            name: 'Todo',
+            component: Todo
+        }, 
+        	{
+            path: '/todos/create',
+            name: 'TodoCreate',
+            component: TodoCreate
+        },
+이경우 :id값은 아무거나 들어갈수 있기 때문에 다른도메인이 걸리면 혼선이 올수 있음
+하지만 create가 들어올경우 정상작동은 하지만 그래도 순서 유의할것
+
+---------------------------
+<style scoped> 사용하면 다는 컴포넌트에서 적용이 안됨
+scoped 없으면 다른 컴포넌트들과 스타일을 공유하게됨
+
+<style scope>를 이용해서 썼어도 <style>을 사용해서 다시 글로벌하게 사용가능함
+
+------------------------
+트랜지션 애니메이션 => vue에서 제공하는 자체 애니메이션
+-이프로젝트에서는 toast창 위에서 나오고 들어가고 서서히 사라지는 효과를 적용할 떄 사용했음
+------------------------
+테레포트 => dom 안에만 있으면 어디든지 코드를 이동시킬수 있게 하는 기능
+
+사용방법
+
+이동을 원하는 코드를 <teleport></teleport>로 감싸줌
+
+그다음 <teleport to="원하는 div id(#), name, class(.) 등"></teleport>
+style을 따로 분리를 위해 사용하기도 함
+----------------------------------------
+
+slot
+
+하나의 컴포넌트를 다른 용도로 사용하고 싶을 때 사용(prop, logic 전부 다른용도)
+
+바뀌는 부분을 <slot></slot>으로 감쌈
+
+컴포넌트 호출부분에
+
+<Modal 
+    v-if="showModal"
+    @close="closeModal"
+    @delete="delteTodo"
+>
+</Modal> 요렇게 닫아줌(기존은 <Modal />이렇게 닫았었음)
+
+이렇게하면
+
+<Modal>
+Delete!!
+</Modal>
+
+Delete!! 가 slot으로 감싼 부분으로 들어가게됨
+
+<slot name="title"></slot>
+<slot name="body"></slot>
+<slot name="footer"></slot>
+
+이렇게 하면
+
+<Modal>
+	<template v-slot:title>slot에 넣을 내용</template>
+	<template v-slot:body>slot에 넣을 내용</template>
+	<template v-slot:footer>slot에 넣을 내용</template>
+</Modal>
+
+이렇게 name으로 각각 넣을 내용을 매칭해서 사용도 가능
+엘리멘트도 넣을수 있음
+
+모달자체를 컴포넘트로 빼서 모달에서 하위 컴포넌트를 생성하여 slot을 사용하는 방식으로 사용해도됨
+
+v-slot => # 으로 바꿔서 사용가능 자세한정보는 공홈참조
+
+-----------------------------------------------------
+emit('update-subject', e.target.value);(밑에꺼랑 다른 .vue에 들어있음)
+
+                <Input 
+                    :label="Subject"
+                    v-model:subject="todo.subject"
+                    :subject="todo.subject"
+                    :error="sunjectError"
+                    @update-subject="updateTodoSubject"
+                />
+
+이렇게 처리 가능하지만 너무 복잡함
+---------------------------------------------------------------------
+
+v-model:subject="todo.subject"
+emit('update:subject', e.target.value);
+
+간단하게 이렇게 처리할수 있음(공홈 multiful v-model vinding 참고)
+---------------------------------------------------------------------
+한개만 바인딩 할떄는 그냥 v-model만 적어도됨
+그리고 props에 modelValue로 작성해야함
+하기 예제 처럼 처리
+---------------1.vue
+                <Input 
+                    v-model="email"
+
+           />
+
+-------------2.vue
+
+        <input 
+            :value="modelValue"
+            @input="onInput"
+            type="email" 
+            class="form-control"
+        >
+
+
+props: {
+        modelValue: {
+            type: String,
+            required: true,
+        }
+
+    setup(props, { emit }){
+        const onInput = (e) => {
+            console.log(e.target.value);
+            emit('update:modelValue', e.target.value);
+        };
+
+요렇게 해야 작동함
+
+---------------------------------------------------------
+vue devtool 소개 -beta버전이 vue3지원 함 정식도 vue3지원하는 아무거나 하면 됨
+---------------------------------------------
+강사의 말
+
+useContext가 deprecated 되었습니다
+
+그래서 emit 하실때 전에 설명드린 setup(props, {emit})를 통해서 emit을 쓰시거나 useContext 대신에 getCurrentInstance를 사용하시면 됩니다.
+ 
+다음 영상들에서 useContext를 사용 하는 부분이 나오면 위 두 방법 중 하나를 선택해서 사용해주세요.
+ 
+getCurrentInstance 사용 방법 예시
+
+<script>
+
+import { getCurrentInstance } from 'vue';
+export default {
+    props: {
+        numberOfPages: {
+            type: Number,
+            required: true
+        },
+        currentPage: {
+            type: Number,
+            required: true
+        }
+    },
+    emits: ['click'],
+    setup() {
+        const { emit } = getCurrentInstance();
+
+        const onClick = (page) => {
+            emit('click', page)
+        };
+
+        return {
+            onClick
+        }
+    }
+}
+
+</script>
+
+--------------------------
+useContext => getCurrentInstance 사용
+
+--------------------------------------
+export const useCount = () => {
+
+}
+//요렇게 export를 하게 되면
+
+import { useCount }
+//요렇게 {}를 사용해서 import 해야함
+
+export default useCount
+//요렇게 export를 하면
+
+import useCount
+//요렇게 {}없이 바로 이름만 적어서 import 하면됨
+
+----------------------------------------------------------------
+
+import { reactive } from 'vue'
+
+export const useCount = () => {
+    const state = reactive({
+        count: 0
+    });
+
+    return state;
+}
+
+-------------
+
+<template>
+    <div>Home Page</div>
+    <div>{{ count }}</div>
+    <button @click="count++">Add</button>
+
+</template>
+
+<script>
+import { useCount } from '@/composables/count';
+
+export default {
+
+    setup() {
+        const { count } = useCount();
+        console.log(count);
+
+        return {
+            count
+        }
+    }
+
+}
+
+요렇게 하면 버튼을 눌러도 count가 증가하지 않음 => 반응성을 잃어 버렸기 때문
+
+따라서
+
+------------
+
+toRefs 사용해서 반응성을 유지하게 해줌
+
+import { reactive, toRefs } from 'vue'
+
+export const useCount = () => {
+    const state = reactive({
+        count: 0
+    });
+
+    return toRefs(state);
+}
+
+이렇게 해주면 state가 ref로 바뀌면서 반응성이 생김(자세한사항은 공홈 참조)
+
+npm에 많은 axios 기능설명이 있음 참조할것
+
+---------------------------------------------------
+vuex란?
+=> state를 관리해주는 툴
+
+emit 사용시
+
+컴포넌트 => App
+
+단계가 1개 정도면 상관없음
+
+하지만 보통
+
+컴포넌트 => 컴포넌트 => 컴포넌트 => 컴포넌트 => App
+
+이런식으로 단계를 많이 밟게 됨
+
+Vuex사용시 컴포넌트를 Vuex Store에서 관리하게됨
+이렇게 되면 하위 컴포넌트 값이 변경되면 vuex가 최상단까지 처리를 해주게됨
+
+import { createStore } from 'vuex';
+
+export default createStore({
+    state: {
+        
+    }
+})
+
+src 밑에 store 폴더를 만들고
+js파일 만든후
+import { createStore } from 'vuex';
+
+export default createStore({
+    state: {
+        
+    }
+})
+
+state에 들어가는 컴포넌트는 vue app 어디서든 사용가능
+요렇게 사용함
+
+main.js 에서 import 해줘야함
+
+import store from './store';
+createApp(App).use(store).use(router).mount('#app')
+요렇게 import 후 use 사용
+
+사용은 요렇게
+
+1. 사용하고자 하는 컴포넌트에 import 후 사용
+
+2. import {useStore} from 'vuex';
+	const store = useStore();
+      	console.log(store.state);
+3. 브라우저 console 확인 하면 proxy가 뜸 이거 열어보면 설정했던 값들이 들어있음
+4. .찍고 원하는걸 사용할수 있음
+	console.log(store.state.showToast);
+	요렇게 하면 showToast 값을 사용할 수있음
+
+---------------------------------------------------------
+mutaions
+
+vuex안의 스테이트를 변경할 유일한 방법, 항상동기적으로 작동해야함
+
+이렇게 사용함
+
+import { createStore } from 'vuex';
+
+export default createStore({
+    state: {
+        toastAlertType: '',
+        toastMessage: '',
+        showToast: false,
+        timeout: null
+    },
+    mutations: {
+        UPDATE_TOAST_MESSAGE (state, payload){ 
+//첫번째 인자는 state를 받고 두번쨰인자는 원하는 인자를 받으면됨 보통 payload라고 함
+
+		state.toastMessage = payload;
+        },
+	
+    actions: {
+        triggerToast ({commit}, message, type = 'success') {//context 안에서 commit만 뺴서 사용가능
+            // toastMessage.value = message;
+            commit('UPDATE_TOAST_MESSAGE', message)
+            //commit의 첫번째 인자에  mutation이름을 넣음
+            // message는 UPDATE_TOAST_MESSAGE에서 payload로 들어가게됨
+            // toastAlertType.value = type;
+	}
+  }
+
+action까지 작성이 다되었으면
+
+사용하고자 하는 곳에서 
+
+store.dispatch('triggerToast', message, type);
+//dispatch(actoion 함수 명, 받는 인자1, 받는 인자 2)
+
+요런 식으로 추가
+
+mutaion 받는건 commit
+action 받는건 dispatch
+
+----------------------------------------
+
+vuex module
+
+state를 관련된것끼리 묶어서 폴더 처럼 관리하게 해줌
+
+----------store/index.js-------------------------
+
+import { createStore } from 'vuex';
+
+export default createStore({
+    
+    modules: {
+        toast: {
+            namespaced: true, //요렇게 namespaced를 true로 놔야 폴더처럼 사용가능
+        state: {
+            toastAlertType: '',
+            toastMessage: '',
+            showToast: false,
+        },
+        mutations: {
+            UPDATE_TOAST_MESSAGE (state, payload){
+                state.toastMessage = payload;
+            },
+            UPDATE_TOAST_ALERT_TYPE (state, payload){
+                state.toastAlertType = payload;
+            },
+            UPDATE_TOAST_STATUS (state, payload){
+                state.showToast = payload;
+            }
+    
+        },
+        actions: {
+            triggerToast ({commit}, message, type = 'success') {
+                
+                commit('UPDATE_TOAST_MESSAGE', message)
+                commit('UPDATE_TOAST_ALERT_TYPE', type)
+                commit('UPDATE_TOAST_STATUS', true)
+    
+                setTimeout(() => {
+    
+                commit('UPDATE_TOAST_MESSAGE', '')
+                commit('UPDATE_TOAST_ALERT_TYPE', '')
+                commit('UPDATE_TOAST_STATUS', false)
+                }, 5000)
+    
+            }
+        },
+        getters: { //vuex에서 사용하는 computed라고 생각하면 됨(거의 똑같음, reactive함)
+            toastMessageWithSmile (state){
+                return state.toastMessage + ' ^_^';
+            }
+        },
+    }
+    }
+});
+
+-----------------------composables/toast.js
+
+import {computed} from 'vue';
+import {useStore} from 'vuex';
+
+export const useToast = () => {
+    const store = useStore();
+    const toastMessage = computed(() => store.getters['toast/toastMessageWithSmile']);
+	//대괄호 속 ''안에  module로 설정한 이름 + / + getters 함수 명 으로 처리해야함
+    const toastAlertType = computed(() => store.state.toast.toastAlertType);
+	//state.모듈명.state 명
+    const showToast = computed(() => store.state.toast.showToast);
+
+    const triggerToast = (message, type = 'success') => {
+        store.dispatch('toast/triggerToast', message, type);
+    };
+
+    return {
+        showToast,
+        toastMessage,
+        toastAlertType,
+        triggerToast
+    }
+
+}
+
+-----------------------
+
+강의 수강 완료
