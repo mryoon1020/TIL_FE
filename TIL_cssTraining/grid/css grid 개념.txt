@@ -1,0 +1,132 @@
+css grid 개념
+
+부모컨테이너 => grid 지정
+
+자식들은 모두 grid cell이 됨
+
+grid는 시작점으로 부터 카운트가 됨(grid-line)
+
+=> 맨 왼쪽 부터 1번 컬럼 시작, 맨위쪽 부터 1번 row 시작 (1, 2, 3...)
+=> 역순으로 올 때는 맨 오른쪽 부터 -1번 컬럼 시작, 맨아래쪽 부터 -1번 row 시작(-1, -2, -3...)
+
+grid-template-columns : 가로축 크기 지정 + 몇개의 cell을 넣을수 있는지 지정
+
+grid-template-rows : 세로축 크기 지정
+
+grid-template-areas : 더 유연하게할 수있음
+
+grid-gap : 각각의 셀끼리 간격지정
+
+grid-column-gap : 가로간격
+
+grid-row-gap : 세로 간격
+
+어떤셀, 몇개의 셀 지정
+grid-column-start
+grid-column-end
+grid-row-start
+grid-row-end
+
+grid-template-areas와 섞어서 arid-area로 영역설정
+
+-----------------------------------------------------
+grid-template-columns: 100px 100px 100px;
+
+=> column의 크기가 100px인 grid cell을 3개 넣는다
+=> cell의 갯수많큼 길이를 넣으면 됨
+ 
+grid-template-rows: 100px 200px 100px 100px;
+
+=> row의 크기가 각각 100px 200px 100px 100px
+=> 주의, row의 갯수가 일치 하지 않으면 제일 마지막 cell 부터 적용이 되지 않음
+
+grid-template-columns: repeat(5, 100px);
+
+=> 반복되는 패턴이라면 repeat(반복횟수, 크기)를 사용할 수 있음
+
+grid-template-rows: 100px 200px repeat(2, 100px);
+
+=> 이렇게 섞어서 사용도 가능함
+
+보통 반응형으로 만들어야 하기 때문에 기준을 px로 잘 하진 않음
+
+사용가능한 너비의 %단위로 지정 가능
+
+fr => 사용가능한 너비에 비율로 표기
+ex) 1fr 2fr 1fr => 사용가능한 너비를 1:2:1 비율로 나눔
+
+grid-auto-rows: 150px;
+
+=> row갯수 상관없이 각 row를 150px 로 자동 설정함
+
+grid-auto-rows: minmax(150px, auto);
+=> minmax(최소값, 최대값)을 통해 유연하게 크기를 늘릴 수 있음
+=> minmax(150px, auto) => 최소 150px설정하며 내부 컨텐츠에 따라 자동으로 높이 조정함
+
+grid-gap은 cell들 사이사이에 균일하게 간격을 조정하는 것
+=> grid의 전체(셀들을 모두 합친 전체)적으로 동일하게 간격을 주고 싶다면 padding을 사용하면됨
+
+class는 띄어 쓰기로 구분이 됨, 
+class="item item2 color2"
+.item, .item2, .color2 등의 방식으로 접근가능
+
+변화시키고 싶은 아이탬을 지정해주기 위해서는 따로 지정을 해주어야함
+.item2{
+    grid-column-start: 2;
+    grid-column-end: 4;
+    grid-row-start: 1;
+    grid-row-end: 3;
+}
+
+=> column시작점을 기준으로 2번~4번을 지정
+=> row시작점을 기준으로 1번~3번을 지정
+
+.item2{
+    grid-column: 2 / 4;
+    grid-row: 1 / 3;
+}
+
+=> 이렇게 축약가능
+
+.item2{
+    grid-column: 2 / span 2;
+    grid-row: 1 / 3;
+}
+
+=> span 차지할cell갯수 를 활용해서 표기도 가능
+
+gridWithImg.css 파일에서
+
+.image {
+    width: 100%; 이미지가 컨테이너 하나의 크기를 모두 사용
+    height: 100%; 이미지가 컨테이너 하나의 크기를 모두 사용
+    object-fit: cover; 이미지를 컨테이너 크기에 맞춰 자름
+} 
+
+grid-template-areas를 활용하면 더 편리하게 배치 할 수 있음
+
+container에 다음과 같이 선언 후
+
+    grid-template-areas: 
+    'a a a'
+    'b c c'
+    'b d g'
+    'e f g';
+
+각각의 태그의 class에 다음과 같이 grid-area를 사용해서 매칭시켜주면 됨
+
+.image1 {
+    grid-area: a;
+}
+
+.image2 {
+    grid-area: b;
+}
+
+.image3 {
+    grid-area: c;
+}
+
+참고영상:
+ 
+https://www.youtube.com/watch?v=nxi1EXmPHRs
